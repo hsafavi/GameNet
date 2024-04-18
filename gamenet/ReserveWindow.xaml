@@ -1,0 +1,121 @@
+﻿<Window x:Class="gamenet.ReserveWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:gamenet"
+        xmlns:persiandatecontrols="clr-namespace:Arash.PersianDateControls;assembly=PersianDateControls"
+        mc:Ignorable="d" FlowDirection="RightToLeft"
+        Title="رزرو کنسول" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <local:DateToPersianDateConverter x:Key="dateConverter"/>
+            <local:DateTimeToPersianDateConverter x:Key="datetimeConverter"/>
+            <local:IndexToColorTypeConverter x:Key="IndexToColorBrush" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock Text="کنسول بازی:"/>
+            <ComboBox ItemsSource="{Binding Consoles}" SelectedItem="{Binding SelectedConsole}" DisplayMemberPath="Key" SelectedValuePath="Value"></ComboBox>
+            
+            <TextBlock Text="روز:" />
+            <persiandatecontrols:PersianDatePicker DisplayDate="{Binding SelectedDate, RelativeSource={RelativeSource Self}}" SelectedDate="{Binding Date,Converter={StaticResource datetimeConverter},Mode=TwoWay}" />
+            <TextBlock Text="ساعت"/>
+            <ComboBox ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" />
+
+            <TextBlock Text=":"/>
+            <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}"/>
+            <TextBlock Text="تا ساعت"/>
+            <ComboBox ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedToMinute}" />
+
+            <TextBlock Text=":"/>
+            <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedToHour}"/>
+            <TextBlock Text="توضیح"/>
+            <TextBox Height="auto" Width="300" Text="{Binding Description}"/>
+            <Button Content="ثبت" Command="{Binding RegisterCmd}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <TextBlock Text="فیلتر نتایج بر اساس کنسول بازی:"/>
+            <ComboBox ItemsSource="{Binding FilterConsoles}" SelectedItem="{Binding SelectedConsoleFilter}" DisplayMemberPath="Key" SelectedValuePath="Value"></ComboBox>
+
+        </StackPanel>
+        <HeaderedItemsControl ItemsSource="{Binding ReservedStations}" AlternationCount="10000">
+            <HeaderedItemsControl.Template>
+                <ControlTemplate TargetType="HeaderedItemsControl">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <Grid >
+                                <Grid.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FF0BA9F1"/>
+                                        <GradientStop Color="White" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Grid.Background>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition/>
+                                   
+
+
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="شماره" Grid.Column="0"/>
+                                <TextBlock Text="زمان" Grid.Column="1"/>
+                                
+                                <TextBlock Text="توضیح" Grid.Column="2"/>
+
+
+                            </Grid>
+                            <ScrollViewer Grid.Row="1">
+                                <ItemsPresenter  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </HeaderedItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Setter Property="Background" Value="{Binding Path=(ItemsControl.AlternationIndex),RelativeSource={RelativeSource Mode=TemplatedParent},Converter={StaticResource IndexToColorBrush}}" />
+
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="Background" Value="LightSkyBlue" />
+                                    </Trigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <TextBlock TextAlignment="Center" Text="{Binding Station.Num}" Grid.Column="0" />
+                        <StackPanel Orientation="Horizontal" Grid.Column="1">
+                            <TextBlock Text="{Binding DateTime,Converter={StaticResource dateConverter}}" />
+                            <TextBlock Text=" تا  " />
+                            <TextBlock Text="{Binding ToMinute}"/>
+                            <TextBlock Text=" : "/>
+                            <TextBlock Text="{Binding ToHour}" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding Description}" Height="auto" Grid.Column="2"/>
+                        <Button Content="حذف" Command="{Binding DataContext.DeleteCmd,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Grid.Column="3" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </HeaderedItemsControl>
+    </DockPanel>
+    
+</Window>

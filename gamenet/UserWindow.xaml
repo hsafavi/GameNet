@@ -1,0 +1,177 @@
+﻿<Window x:Class="gamenet.UserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:gamenet"
+        mc:Ignorable="d"
+        Title="اعضای گیم نت" Height="450" Width="800" FlowDirection="RightToLeft">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+            <local:IndexToColorTypeConverter x:Key="IndexToColorBrush" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ToolBarPanel>
+            <ToolBar>
+                <Button Width="50" Height="50" Command="{Binding AddUserCmd}">
+                    <Button.Content>
+                        <Image Source="pack://application:,,,/gamenet;component/Resources/male-user-add.png" ></Image>
+                    </Button.Content>
+                </Button>
+                <ToggleButton Width="50" Height="50" IsChecked="{Binding JustActiveUsers}">
+                    <ToggleButton.Content>
+                        <Image Source="pack://application:,,,/gamenet;component/Resources/Accept-Male-User.png"></Image>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <TextBlock Text="جستجو برای نام:" VerticalAlignment="Center" />
+                <TextBox x:Name="SearchBox" Text="" TextChanged="Search_Changed" Width="100" Margin="0"/>
+            </ToolBar>
+        </ToolBarPanel>
+        <Grid Grid.Row="1">
+            <HeaderedItemsControl ItemsSource="{Binding Users}" AlternationCount="5000">
+                <HeaderedItemsControl.Template>
+                    <ControlTemplate TargetType="HeaderedItemsControl">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Grid >
+                                    <Grid.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#FF0BA9F1"/>
+                                            <GradientStop Color="White" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Grid.Background>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="شماره اشتراک"/>
+                                    <TextBlock Text="نام" Grid.Column="1"/>
+                                    <TextBlock Text="نام خانوادگی" Grid.Column="2"/>
+                                    <TextBlock Text="کیف پول" Grid.Column="3"/>
+                                    <TextBlock Text="نام پدر" Grid.Column="4"/>
+                                    <TextBlock Text="شماره تماس" Grid.Column="5" />
+
+                                </Grid>
+                                <ScrollViewer Grid.Row="1">
+                                    <ItemsPresenter  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </HeaderedItemsControl.Template>
+
+                <ItemsControl.ItemTemplate>
+                    
+                    <DataTemplate>
+                        <Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+
+                            </Grid.ColumnDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Background" Value="{Binding Path=(ItemsControl.AlternationIndex),RelativeSource={RelativeSource Mode=TemplatedParent},Converter={StaticResource IndexToColorBrush}}" />
+
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Background" Value="LightSkyBlue" />
+                                        </Trigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <TextBlock Text="{Binding Num}" TextAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="1"/>
+                            <TextBlock Text="{Binding Family}" Grid.Column="2"/>
+                            <TextBlock Text="{Binding Wallet}" Grid.Column="3" FlowDirection="LeftToRight" TextAlignment="Center"/>
+                            <TextBlock Text="{Binding Father}" Grid.Column="4"/>
+                            <TextBlock Text="{Binding Tel}" Grid.Column="5" />
+
+                            <Button  Grid.Column="6" Width="40" Command="{Binding DataContext.WalletTransCmd,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Background="{x:Null}" BorderBrush="{x:Null}" >
+                                <Button.Content>
+                                    <Image  Source="pack://application:,,,/gamenet;component/Resources/wallet.jpg"  />
+                                </Button.Content>
+                            </Button>
+                            <Button Content="ویرایش" Grid.Column="7" Command="{Binding DataContext.EditCmd,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                            <Button Content="حذف" Grid.Column="8" Command="{Binding DataContext.DeleteCmd,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                        </Grid>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </HeaderedItemsControl>
+            <Grid VerticalAlignment="Stretch" x:Name="userDialog"  Visibility="{Binding EditOrRegister, Mode=TwoWay,Converter={StaticResource BoolToVis}}" Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="300"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Center" Text="نام" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding User.Name,Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Text="نام خانوادگی"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding User.Family}" />
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="نام پدر"/>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding User.Father}" />
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Text="شماره تماس"/>
+                <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding User.Tel}" />
+                <TextBlock Text="فعال" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <CheckBox IsChecked="{Binding User.IsActive,Mode=TwoWay}" Grid.Row="4" Grid.Column="1" />
+                <StackPanel Grid.ColumnSpan="2"  Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                    <Button  Width="100" Height="80" Command="{Binding SaveCmd}" CommandParameter="{Binding User}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Content" Value="ثبت مشترک جدید" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EditMode}" Value="True">
+                                        <Setter Property="Content" Value="ثبت ویرایش" />
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button  Width="100" Height="80" Content="انصراف" Command="{Binding CancelCmd}" />
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

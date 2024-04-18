@@ -1,0 +1,35 @@
+﻿<Window x:Class="gamenet.AddToWalletWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:local="clr-namespace:gamenet"
+        mc:Ignorable="d"
+        ShowInTaskbar="False"
+        FlowDirection="RightToLeft"
+        Title="تراکنش حساب" Height="450" Width="800" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Msg}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <RadioButton Content="بستانکار" />
+            <RadioButton Content="بدهکار" IsChecked="{Binding MinusMode}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <TextBlock Text="مقدار" />
+            <TextBox Text="{Binding Value}" Width="200" TextInput="TextBox_PreviewTextInput"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center">
+            <Button Content="ثبت" Command="{Binding RegisterCmd}"/>
+            <Button Content="انصراف" Command="{Binding CancelCmd}"/>
+        </StackPanel>
+    </Grid>
+</Window>
